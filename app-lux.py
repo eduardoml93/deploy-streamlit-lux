@@ -3,16 +3,23 @@ import streamlit.components.v1 as components
 import pandas as pd
 import lux
 import io
+import os
 
 def app():
     st.set_page_config(layout="wide")
     st.title('Lux Streamlit EDA App')
     st.success('Check out these cool visualizations!')
 
-    uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+    dir = os.getcwd()
+    list_csv = os.listdir(dir)
+    list_csv = [i for i in list_csv if i.endswith('.csv')]
+    
+    # uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
+    uploaded_file = st.selectbox("Choose a CSV file", list_csv, index=0)
+    sep = st.selectbox("Choose a separator", [',', ';', '\t'], index=0)
     if uploaded_file is not None:
-        delimiter = st.selectbox("Select Delimiter", ('Comma (,)', 'Semicolon (;)', 'Tab (\t)', 'Space'), index=0)
-        df = pd.read_csv(uploaded_file, sep=delimiter.split(' ')[1])
+
+        df = pd.read_csv(uploaded_file, sep=sep)
         st.dataframe(df)
 
         export_file = 'visualizations.html'
